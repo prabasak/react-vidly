@@ -1,10 +1,26 @@
 import React, { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
+import Like from "./common/like";
 
 class Movies extends Component {
 	state = {
 		movies: getMovies()
 	};
+
+	handleDelete = movie => {
+		// to show the updated movie list, we have to update the movie list except the movie that is to be deleted
+		const movies = this.state.movies.filter(m => m._id !== movie._id);
+		// assigning the 'movies' object to the movies state porperty, to update the movie list
+		this.setState({ movies }); // Note: This can be rewritten as per ES6 standard "this.setState({movies})"
+	};
+
+	handleLike = movie => {
+		const movies = [...this.state.movies];	// cloning the actual object to avoid data mutation
+		const index = movies.indexOf(movie);	// fetching index position of each object
+		movies[index] = {...movies[index]};	// cloning each movie object
+		movies[index].liked = !movies[index].liked;	// toggling the value
+		this.setState({ movies });
+	}
 
 	renderMovieList() {
 		const { length: moviesCount } = this.state.movies;
@@ -22,6 +38,7 @@ class Movies extends Component {
 								<th>Stock</th>
 								<th>Rate</th>
 								<th />
+								<th />
 							</tr>
 						</thead>
 						<tbody>
@@ -31,6 +48,7 @@ class Movies extends Component {
 									<td>{movie.genre.name}</td>
 									<td>{movie.numberInStock}</td>
 									<td>{movie.dailyRentalRate}</td>
+									<td><Like liked={movie.liked} onClick={() => this.handleLike(movie)} /></td>
 									<td>
 										<button
 											type="button"
@@ -48,13 +66,6 @@ class Movies extends Component {
 			</React.Fragment>
 		);
 	}
-
-	handleDelete = movie => {
-		// to show the updated movie list, we have to update the movie list except the movie that is to be deleted
-		const movies = this.state.movies.filter(m => m._id !== movie._id);
-		// assigning the 'movies' object to the movies state porperty, to update the movie list
-		this.setState({ movies: movies }); // Note: This can be rewritten as per ES6 standard "this.setState({movies})"
-	};
 
 	render() {
 		return <main className="container">{this.renderMovieList()}</main>;
