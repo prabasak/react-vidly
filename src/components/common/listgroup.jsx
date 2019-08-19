@@ -1,7 +1,6 @@
 import React from "react";
 
-const ListGroup = props => {
-  const { items, textProperty, valueProperty, selectedItem, onItemSelect } = props;
+const ListGroup = ({ items, textProperty, valueProperty, selectedItem, onItemSelect }) => {
   return (
     <React.Fragment>
       <div className="list-group">
